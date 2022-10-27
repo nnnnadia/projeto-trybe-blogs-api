@@ -1,5 +1,5 @@
 const { User } = require('../models');
-const jwtUtil = require('../utils/jwt.utils');
+const jwtUtil = require('../utils/jwt');
 
 const checkLogin = async ({ email, password }) => {
   try {
