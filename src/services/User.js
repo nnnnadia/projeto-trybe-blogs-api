@@ -1,4 +1,5 @@
 const { User } = require('../models');
+const jwtUtil = require('../utils/jwt.utils');
 
 const checkLogin = async ({ email, password }) => {
   try {
@@ -8,7 +9,7 @@ const checkLogin = async ({ email, password }) => {
     }
     return ({
       type: undefined,
-      token: 'adasda',
+      token: jwtUtil.createToken(user.id),
     });
   } catch (error) {
     return { type: 'INTERNAL_ERROR', message: 'Internal error' };
