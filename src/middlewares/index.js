@@ -1,9 +1,9 @@
 const ErrorHandler = require('./errorHandler');
 const LoginValidation = require('./loginValidation');
-const newUserValidation = require('./newUserValidation');
+const NewUserValidation = require('./newUserValidation');
 
 module.exports = {
   ErrorHandler,
   LoginValidation,
-  newUserValidation,
+  NewUserValidation,
 };

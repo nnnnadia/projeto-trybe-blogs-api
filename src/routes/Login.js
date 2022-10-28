@@ -4,6 +4,6 @@ const { LoginValidation } = require('../middlewares');
 
 const router = express.Router();
 
-router.post('/', LoginValidation.loginValidation, UserController.login);
+router.post('/', LoginValidation, UserController.login);
 
 module.exports = router;
