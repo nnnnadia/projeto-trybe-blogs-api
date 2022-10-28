@@ -14,7 +14,14 @@ const createUser = async (req, res, next) => {
   next({ type, message });
 };
 
+const getAllUsers = async (req, res, next) => {
+  const { type, users, message } = await UserService.getAllUsers();
+  if (!type) return res.status(200).json(users);
+  next({ type, message });
+};
+
 module.exports = {
   login,
   createUser,
+  getAllUsers,
 };
