@@ -7,6 +7,14 @@ const login = async (req, res, next) => {
   next(response);
 };
 
+const createUser = async (req, res, next) => {
+  const userData = req.body;
+  const { type, token, message } = await UserService.createUser(userData);
+  if (!type) return res.status(201).json({ token });
+  next({ type, message });
+};
+
 module.exports = {
   login,
+  createUser,
 };
