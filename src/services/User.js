@@ -33,7 +33,20 @@ const createUser = async ({ displayName, email, password, image }) => {
   }
 };
 
+const getAllUsers = async () => {
+  try {
+    const users = await User.findAll();
+    return ({
+      type: undefined,
+      users,
+    });
+  } catch (error) {
+    return { type: 'INTERNAL_ERROR', message: 'Internal error' };
+  }
+};
+
 module.exports = {
   checkLogin,
   createUser,
+  getAllUsers,
 };
