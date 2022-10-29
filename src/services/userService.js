@@ -5,16 +5,17 @@ const findUserEmail = (email) => userModel.findOne({ where: { email } });
 
 const checkLogin = async ({ email, password }) => {
   try {
-    const user = await userModel.findOne({ where: { email } });
+    const user = await findUserEmail(email);
     if (!user || user.password !== password) {
-      return { type: 'INVALID_FIELD', message: 'Invalid fields' };
+      const e = new Error('Invalid fields');
+      e.type = 'INVALID_FIELD';
+      throw e;
     }
-    return ({
-      type: undefined,
-      token: jwtUtil.createToken(user.id),
-    });
-  } catch (_error) {
-    return { type: 'INTERNAL_ERROR', message: 'Internal error' };
+    const token = jwtUtil.createToken(user.id);
+    return token;
+  } catch (error) {
+    if (error.type) throw error;
+    throw new Error();
   }
 };
 

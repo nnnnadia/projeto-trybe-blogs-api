@@ -1,7 +1,8 @@
 const { mapError } = require('../utils/errorMap');
 
-const errorHandler = ({ type, message }, _req, res, _next) => {
-  const statusCode = mapError(type);
+const errorHandler = (error, _req, res, _next) => {
+  const statusCode = mapError(error.type);
+  const message = error.message || 'Internal error';
   res.status(statusCode).json({ message });
 };
 

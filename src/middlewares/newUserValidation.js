@@ -1,4 +1,4 @@
-const newUserSchema = require('./validations/newUserSchema');
+const newUserSchema = require('../utils/validations/newUserSchema');
 
 const newUserValidation = (req, _res, next) => {
   const newUser = {
