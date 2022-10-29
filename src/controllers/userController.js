@@ -14,10 +14,11 @@ const createUser = async (req, res) => {
   res.status(201).json({ token });
 };
 
-const getAllUsers = async (req, res, next) => {
-  const { type, users, message } = await userService.getAllUsers();
-  if (!type) return res.status(200).json(users);
-  next({ type, message });
+const getAllUsers = async (req, res) => {
+  const tokenJWT = req.headers.authorization;
+  authService.authenticateToken(tokenJWT);
+  const users = await userService.getAllUsers();
+  res.status(200).json(users);
 };
 
 module.exports = {
