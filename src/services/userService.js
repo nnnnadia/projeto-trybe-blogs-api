@@ -38,8 +38,20 @@ const getAllUsers = async () => {
     const usersWithoutPassword = users
       .map(({ password, ...userWithoutPassword }) => userWithoutPassword);
     return usersWithoutPassword;
+  } catch (_error) {
+    throw new Error();
+  }
+};
+
+const getUserById = async (id) => {
+  try {
+    const rawData = await userModel.findOne({ where: { id } });
+    if (!rawData) throw typeError('NOT_FOUND', 'User does not exist');
+    const { password, ...userWithoutPassword } = rawData.dataValues;
+    return userWithoutPassword;
   } catch (error) {
-    throw new Error(error.message);
+    if (error.type) throw error;
+    throw new Error();
   }
 };
 
@@ -47,4 +59,5 @@ module.exports = {
   checkLogin,
   createUser,
   getAllUsers,
+  getUserById,
 };
