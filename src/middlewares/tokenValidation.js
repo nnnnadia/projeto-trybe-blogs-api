@@ -1,17 +1,11 @@
-const jwtUtil = require('../utils/jwt');
+const AuthService = require('../services');
 
 const validateToken = (req, _res, next) => {
-  const token = req.authorization;
-  if (!token) next({ type: 'UNAUTHORIZED', message: 'Token not found' });
-  try {
-    const { data } = jwtUtil.validateToken(token);
-    console.log(data);
-    next();
-  } catch (_error) {
-    next({ type: 'UNAUTHORIZED', message: 'Expired or invalid token' });
-  }
+  const authorization = req.headers;
+  if (!authorization) next({ type: 'UNAUTHORIZED', message: 'Token not found' });
+  const { type, message } = AuthService.authenticateToken(authorization);
+  if (!type) next();
+  next({ type, message });
 };
 
-module.exports = {
-  validateToken,
-};
+module.exports = validateToken;
