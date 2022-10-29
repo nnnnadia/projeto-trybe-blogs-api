@@ -15,21 +15,14 @@ const authenticateToken = (authorization) => {
 
 const loginValidation = ({ email, password }) => {
   const { error, value } = loginSchema.validate({ email, password });
-  if (error) {
-    const e = new Error('Some required fields are missing');
-    e.type = 'MISSING_FIELD';
-    throw e;
-  }
+  if (error) throw typeError('MISSING_FIELD', 'Some required fields are missing');
   return value;
 };
 
 const newUserValidation = ({ displayName, email, password, image }) => {
   const { error, value } = newUserSchema
     .validate({ displayName, email, password, image });
-  if (error) {
-    error.type = 'INVALID_FIELD';
-    throw error;
-  }
+  if (error) throw typeError('INVALID_FIELD', error.message);
   return (value);
 };
 

@@ -1,16 +1,13 @@
 const { User: userModel } = require('../models');
 const jwtUtil = require('../utils/jwt');
+const typeError = require('../utils/typeError');
 
 const findUserEmail = (email) => userModel.findOne({ where: { email } });
 
 const checkLogin = async ({ email, password }) => {
   try {
     const user = await findUserEmail(email);
-    if (!user || user.password !== password) {
-      const e = new Error('Invalid fields');
-      e.type = 'INVALID_FIELD';
-      throw e;
-    }
+    if (!user || user.password !== password) throw typeError('INVALID_FIELD', 'Invalid fields');
     const token = jwtUtil.createToken(user.id);
     return token;
   } catch (error) {
@@ -22,27 +19,27 @@ const checkLogin = async ({ email, password }) => {
 const createUser = async ({ displayName, email, password, image }) => {
   try {
     const alreadyRegistered = await findUserEmail(email);
-    if (alreadyRegistered) return { type: 'CONFLICTED_DATA', message: 'User already registered' };
+    if (alreadyRegistered) throw typeError('CONFLICTED_DATA', 'User already registered');
     const user = await userModel
       .create({ displayName, email, password, image });
-    return ({
-      type: undefined,
-      token: jwtUtil.createToken(user.id),
-    });
+    const token = jwtUtil.createToken(user.id);
+    return token;
   } catch (error) {
-    return { type: 'INTERNAL_ERROR', message: 'Internal error' };
+    if (error.type) throw error;
+    throw new Error();
   }
 };
 
 const getAllUsers = async () => {
   try {
-    const users = await userModel.findAll();
-    return ({
-      type: undefined,
-      users,
-    });
+    const rawData = await userModel.findAll();
+    const users = rawData
+      .map(({ dataValues }) => dataValues);
+    const usersWithoutPassword = users
+      .map(({ password, ...userWithoutPassword }) => userWithoutPassword);
+    return usersWithoutPassword;
   } catch (error) {
-    return { type: 'INTERNAL_ERROR', message: 'Internal error' };
+    throw new Error(error.message);
   }
 };
 
