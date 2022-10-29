@@ -1,8 +1,8 @@
-const { userService } = require('../services');
+const { userService, authService } = require('../services');
 
 const login = async (req, res, next) => {
-  const userData = req.body;
-  const { type, token, message } = await userService.checkLogin(userData);
+  const { email, password } = authService.loginValidation(req.body);
+  const { type, token, message } = await userService.checkLogin({ email, password });
   if (!type) return res.status(200).json({ token });
   next({ type, message });
 };
