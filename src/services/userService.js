@@ -1,11 +1,11 @@
-const { User } = require('../models');
+const { User: userModel } = require('../models');
 const jwtUtil = require('../utils/jwt');
 
-const findUserEmail = (email) => User.findOne({ where: { email } });
+const findUserEmail = (email) => userModel.findOne({ where: { email } });
 
 const checkLogin = async ({ email, password }) => {
   try {
-    const user = await User.findOne({ where: { email } });
+    const user = await userModel.findOne({ where: { email } });
     if (!user || user.password !== password) {
       return { type: 'INVALID_FIELD', message: 'Invalid fields' };
     }
@@ -22,7 +22,7 @@ const createUser = async ({ displayName, email, password, image }) => {
   try {
     const alreadyRegistered = await findUserEmail(email);
     if (alreadyRegistered) return { type: 'CONFLICTED_DATA', message: 'User already registered' };
-    const user = await User
+    const user = await userModel
       .create({ displayName, email, password, image });
     return ({
       type: undefined,
@@ -35,7 +35,7 @@ const createUser = async ({ displayName, email, password, image }) => {
 
 const getAllUsers = async () => {
   try {
-    const users = await User.findAll();
+    const users = await userModel.findAll();
     return ({
       type: undefined,
       users,
