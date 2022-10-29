@@ -6,11 +6,12 @@ const login = async (req, res) => {
   res.status(200).json({ token });
 };
 
-const createUser = async (req, res, next) => {
-  const userData = req.body;
-  const { type, token, message } = await userService.createUser(userData);
-  if (!type) return res.status(201).json({ token });
-  next({ type, message });
+const createUser = async (req, res) => {
+  const { displayName, email, password, image } = authService
+    .newUserValidation(req.body);
+  const token = await userService
+    .createUser({ displayName, email, password, image });
+  res.status(201).json({ token });
 };
 
 const getAllUsers = async (req, res, next) => {

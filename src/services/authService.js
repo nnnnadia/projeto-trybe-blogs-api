@@ -1,13 +1,15 @@
 const { validateToken } = require('../utils/jwt');
+const typeError = require('../utils/typeError');
 const loginSchema = require('../utils/validations/loginSchema');
 const newUserSchema = require('../utils/validations/newUserSchema');
 
 const authenticateToken = (authorization) => {
+  if (!authorization) throw typeError('UNAUTHORIZED', 'Token not found');
   try {
     validateToken(authorization);
-    return ({ type: undefined });
+    return;
   } catch (_error) {
-    return ({ type: 'UNAUTHORIZED', message: 'Expired or invalid token' });
+    throw typeError('UNAUTHORIZED', 'Expired or invalid token');
   }
 };
 
