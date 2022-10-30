@@ -14,16 +14,12 @@ const createUser = async (req, res) => {
   res.status(201).json({ token });
 };
 
-const getAllUsers = async (req, res) => {
-  const tokenJWT = req.headers.authorization;
-  authService.authenticateToken(tokenJWT);
+const getAllUsers = async (_req, res) => {
   const users = await userService.getAllUsers();
   res.status(200).json(users);
 };
 
 const getUserById = async (req, res) => {
-  const tokenJWT = req.headers.authorization;
-  authService.authenticateToken(tokenJWT);
   const { id } = req.params;
   const user = await userService.getUserById(id);
   res.status(200).json(user);
