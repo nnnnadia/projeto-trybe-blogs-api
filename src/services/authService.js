@@ -3,6 +3,7 @@ const typeError = require('../utils/typeError');
 const loginSchema = require('../utils/validations/loginSchema');
 const newUserSchema = require('../utils/validations/newUserSchema');
 const categorySchema = require('../utils/validations/categorySchema');
+const postSchema = require('../utils/validations/postSchema');
 
 const authenticateToken = (authorization) => {
   if (!authorization) throw typeError('UNAUTHORIZED', 'Token not found');
@@ -34,9 +35,17 @@ const categoryValidation = ({ name }) => {
   return value;
 };
 
+const postValidation = ({ title, content, categoryIds }) => {
+  const { error, value } = postSchema
+    .validate({ title, content, categoryIds });
+  if (error) throw typeError('INVALID_FIELD', error.message);
+  return value;
+};
+
 module.exports = {
   authenticateToken,
   loginValidation,
   newUserValidation,
   categoryValidation,
+  postValidation,
 };
