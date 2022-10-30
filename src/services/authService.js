@@ -2,13 +2,14 @@ const { validateToken } = require('../utils/jwt');
 const typeError = require('../utils/typeError');
 const loginSchema = require('../utils/validations/loginSchema');
 const newUserSchema = require('../utils/validations/newUserSchema');
+const categorySchema = require('../utils/validations/categorySchema');
 
 const authenticateToken = (authorization) => {
   if (!authorization) throw typeError('UNAUTHORIZED', 'Token not found');
   try {
     validateToken(authorization);
     return;
-  } catch (_error) {
+  } catch (_) {
     throw typeError('UNAUTHORIZED', 'Expired or invalid token');
   }
 };
@@ -26,8 +27,16 @@ const newUserValidation = ({ displayName, email, password, image }) => {
   return (value);
 };
 
+const categoryValidation = ({ name }) => {
+  const { error, value } = categorySchema
+    .validate({ name });
+  if (error) throw typeError('INVALID_FIELD', error.message);
+  return value;
+};
+
 module.exports = {
   authenticateToken,
   loginValidation,
   newUserValidation,
+  categoryValidation,
 };
