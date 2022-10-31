@@ -12,6 +12,9 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     tableName: 'blog_posts',
     underscored: true,
+    timestamps: true,
+    createdAt: 'published',
+    updatedAt: 'updated',
   });
   BlogPost.associate = (models) => {
     BlogPost.belongsTo(models.User,
