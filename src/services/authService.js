@@ -1,19 +1,21 @@
-const { validateToken } = require('../utils/jwt');
+const { validateToken, retrieveTokenData } = require('../utils/jwt');
 const typeError = require('../utils/typeError');
 const loginSchema = require('../utils/validations/loginSchema');
 const newUserSchema = require('../utils/validations/newUserSchema');
 const categorySchema = require('../utils/validations/categorySchema');
 const postSchema = require('../utils/validations/postSchema');
 
-const authenticateToken = (authorization) => {
-  if (!authorization) throw typeError('UNAUTHORIZED', 'Token not found');
+const authenticateToken = (jwtToken) => {
+  if (!jwtToken) throw typeError('UNAUTHORIZED', 'Token not found');
   try {
-    validateToken(authorization);
+    validateToken(jwtToken);
     return;
   } catch (_) {
     throw typeError('UNAUTHORIZED', 'Expired or invalid token');
   }
 };
+
+const loggedUser = (jwtToken) => retrieveTokenData(jwtToken);
 
 const loginValidation = ({ email, password }) => {
   const { error, value } = loginSchema.validate({ email, password });
@@ -38,12 +40,13 @@ const categoryValidation = ({ name }) => {
 const postValidation = ({ title, content, categoryIds }) => {
   const { error, value } = postSchema
     .validate({ title, content, categoryIds });
-  if (error) throw typeError('INVALID_FIELD', error.message);
+  if (error) throw typeError('INVALID_FIELD', 'Some required fields are missing');
   return value;
 };
 
 module.exports = {
   authenticateToken,
+  loggedUser,
   loginValidation,
   newUserValidation,
   categoryValidation,
