@@ -7,6 +7,7 @@ const {
   Category: categoryModel,
 } = require('../models');
 const categoryService = require('./categoryService');
+const typeError = require('../utils/typeError');
 
 const env = process.env.NODE_ENV;
 const sequelize = new Sequelize(config[env]);
@@ -42,7 +43,24 @@ const getAllBlogPosts = async () => {
   }
 };
 
+const getBlogPostById = async (id) => {
+  try {
+    const blogPost = await blogPostModel.findOne({
+      where: { id },
+      include: [
+        { model: userModel, as: 'user', attributes: { exclude: 'password' } },
+        { model: categoryModel, as: 'categories' }],
+    });
+    if (!blogPost) throw typeError('NOT_FOUND', 'Post does not exist');
+    return blogPost;
+  } catch (error) {
+    if (error.type) throw error;
+    throw new Error(error);
+  }
+};
+
 module.exports = {
   createBlogPost,
   getAllBlogPosts,
+  getBlogPostById,
 };
