@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.use(tokenValidation);
 router.post('/', blogPostController.createBlogPost);
-router.get('/', blogPostController.getAllBlogPosts);
+router.get('/', blogPostController.getBlogPosts);
+router.get('/:id', blogPostController.getBlogPosts);
 
 module.exports = router;
