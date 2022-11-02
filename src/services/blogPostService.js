@@ -3,6 +3,8 @@ const config = require('../config/config');
 const {
   BlogPost: blogPostModel,
   PostCategory: postCategoryModel,
+  User: userModel,
+  Category: categoryModel,
 } = require('../models');
 const categoryService = require('./categoryService');
 
@@ -27,6 +29,20 @@ const createBlogPost = async (postData) => {
   }
 };
 
+const getAllBlogPosts = async () => {
+  try {
+    const blogPosts = await blogPostModel.findAll({
+      include: [
+        { model: userModel, as: 'user', attributes: { exclude: 'password' } },
+        { model: categoryModel, as: 'categories' }],
+    });
+    return blogPosts;
+  } catch (_) {
+    throw new Error();
+  }
+};
+
 module.exports = {
   createBlogPost,
+  getAllBlogPosts,
 };
