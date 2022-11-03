@@ -26,7 +26,7 @@ const createBlogPost = async (postData) => {
     return result;
   } catch (error) {
     if (error.type) throw error;
-    throw new Error(error);
+    throw new Error();
   }
 };
 
@@ -52,10 +52,20 @@ const getBlogPostById = async (id) => {
         { model: categoryModel, as: 'categories' }],
     });
     if (!blogPost) throw typeError('NOT_FOUND', 'Post does not exist');
+  } catch (error) {
+    if (error.type) throw error;
+    throw new Error();
+  }
+};
+
+const updateBlogPost = async (updatedData, id) => {
+  try {
+    const blogPost = await blogPostModel.update(updatedData, { where: { id } });
+    if (!blogPost) throw typeError('NOT_FOUND', 'Post does not exist');
     return blogPost;
   } catch (error) {
     if (error.type) throw error;
-    throw new Error(error);
+    throw new Error();
   }
 };
 
@@ -63,4 +73,5 @@ module.exports = {
   createBlogPost,
   getAllBlogPosts,
   getBlogPostById,
+  updateBlogPost,
 };
