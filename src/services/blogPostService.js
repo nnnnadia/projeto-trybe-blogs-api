@@ -69,9 +69,20 @@ const updateBlogPost = async (updatedData, id) => {
   }
 };
 
+const isOP = async (postId, loggedUserId) => {
+  try {
+    const { userId } = await blogPostModel.findOne({ where: { id: postId } });
+    if (userId !== loggedUserId) throw typeError('UNAUTHORIZED', 'Unauthorized user');
+  } catch (error) {
+    if (error.type) throw error;
+    throw new Error();
+  }
+};
+
 module.exports = {
   createBlogPost,
   getAllBlogPosts,
   getBlogPostById,
   updateBlogPost,
+  isOP,
 };
