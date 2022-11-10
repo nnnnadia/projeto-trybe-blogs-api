@@ -89,11 +89,23 @@ const isOP = async (postId, loggedUserId) => {
   }
 };
 
+const deleteBlogPost = async (id, userId) => {
+  try {
+    await isValidPost(id);
+    await isOP(id, userId);
+    await blogPostModel.destroy({ where: { id } });
+  } catch (error) {
+    if (error.type) throw error;
+    throw new Error();
+  }
+};
+
 module.exports = {
   createBlogPost,
   getAllBlogPosts,
   getBlogPostById,
   updateBlogPost,
   isOP,
+  deleteBlogPost,
   isValidPost,
 };
