@@ -27,8 +27,17 @@ const updateBlogPost = async (req, _res, next) => {
   next();
 };
 
+const deleteBlogPost = async (req, res) => {
+  const { id } = req.params;
+  const { authorization } = req.headers;
+  const { userId } = authService.loggedUser(authorization);
+  await blogPostService.deleteBlogPost(id, userId);
+  res.status(204).json();
+};
+
 module.exports = {
   createBlogPost,
   getBlogPosts,
   updateBlogPost,
+  deleteBlogPost,
 };
