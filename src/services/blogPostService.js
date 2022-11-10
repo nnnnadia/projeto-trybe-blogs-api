@@ -43,15 +43,26 @@ const getAllBlogPosts = async () => {
   }
 };
 
+const isValidPost = async (id) => {
+  try {
+    const blogPost = await blogPostModel.findOne({ where: { id } });
+    if (!blogPost) throw typeError('NOT_FOUND', 'Post does not exist');
+  } catch (error) {
+    if (error.type) throw error;
+    throw new Error();
+  }
+};
+
 const getBlogPostById = async (id) => {
   try {
+    await isValidPost(id);
     const blogPost = await blogPostModel.findOne({
       where: { id },
       include: [
         { model: userModel, as: 'user', attributes: { exclude: 'password' } },
         { model: categoryModel, as: 'categories' }],
     });
-    if (!blogPost) throw typeError('NOT_FOUND', 'Post does not exist');
+    return blogPost;
   } catch (error) {
     if (error.type) throw error;
     throw new Error();
@@ -60,9 +71,8 @@ const getBlogPostById = async (id) => {
 
 const updateBlogPost = async (updatedData, id) => {
   try {
-    const blogPost = await blogPostModel.update(updatedData, { where: { id } });
-    if (!blogPost) throw typeError('NOT_FOUND', 'Post does not exist');
-    return blogPost;
+    await isValidPost(id);
+    await blogPostModel.update(updatedData, { where: { id } });
   } catch (error) {
     if (error.type) throw error;
     throw new Error();
@@ -75,7 +85,7 @@ const isOP = async (postId, loggedUserId) => {
     if (userId !== loggedUserId) throw typeError('UNAUTHORIZED', 'Unauthorized user');
   } catch (error) {
     if (error.type) throw error;
-    throw new Error();
+    throw new Error(error);
   }
 };
 
@@ -85,4 +95,5 @@ module.exports = {
   getBlogPostById,
   updateBlogPost,
   isOP,
+  isValidPost,
 };
