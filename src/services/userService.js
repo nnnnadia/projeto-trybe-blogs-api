@@ -55,9 +55,19 @@ const getUserById = async (id) => {
   }
 };
 
+const deleteUser = async (token) => {
+  try {
+    const { userId } = jwtUtil.retrieveTokenData(token);
+    await userModel.destroy({ where: { id: userId } });
+  } catch (_error) {
+    throw new Error();
+  }
+};
+
 module.exports = {
   checkLogin,
   createUser,
   getAllUsers,
   getUserById,
+  deleteUser,
 };
